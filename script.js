@@ -1,4 +1,4 @@
-// Limpa histórico antigo com dados reais ao carregar
+
 localStorage.removeItem('historicoCalculos');
 
 var historicoCalculos = [];
