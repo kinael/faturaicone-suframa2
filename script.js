@@ -52,6 +52,7 @@ function adicionarAoHistorico() {
 }
 
 
+
 function exibirDetalhesHistorico(index) {
     var historicoItem = historicoCalculos[index];
     var mensagem = `PIS: ${historicoItem.pis}\nCOFINS: ${historicoItem.coffins}\nICMS: ${historicoItem.calculoN}\nTOTAL IMPORTADOS: ${historicoItem.importadostotal}\nTOTAL ICMS: ${historicoItem.icmstotal}`;
