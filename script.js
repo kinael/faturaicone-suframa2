@@ -64,12 +64,13 @@ function atualizarHistorico() {
         var li = document.createElement('li');
         li.innerHTML = `<span class="valor">${item.valor}</span> <span class="data">${item.data}</span>`;
         li.classList.add(index === 0 ? 'ultimo-calculo' : 'calculo-anterior');
-        li.addEventListener('click', function () {
-            exibirDetalhesHistorico(index);
-        });
+        li.style.pointerEvents = 'none'; // Garantir que os itens não sejam clicáveis
+        li.style.filter = 'blur(5px)'; // Manter o efeito borrado
+        li.style.opacity = '0.5'; // Ajustar a opacidade para visualmente "bloqueado"
         lista.appendChild(li);
     });
 }
+
 
 function calcularDesconto() {
     var valorTotal = parseFloat(document.getElementById('valorTotal').value.replace('.', '').replace(',', '.'));
