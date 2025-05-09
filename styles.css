@@ -356,7 +356,9 @@ button:hover {
     user-select: none;
     pointer-events: none;
     font-weight: bold;
+    opacity: 0.9;
 }
+
 
 
 .aviso-acesso {
