@@ -26,30 +26,23 @@ function formatarMoeda(valor) {
     }).format(valor);
 }
 
-function adicionarAoHistorico() {
-    const dataHoraAtual = formatarDataHora();
-    const valorMascarado = 'XXX,XXX';
+function atualizarHistorico() {
+    var lista = document.getElementById('historicoLista');
+    lista.innerHTML = '';
 
-    const itemMascarado = {
-        valor: valorMascarado,
-        data: dataHoraAtual,
-        pis: valorMascarado,
-        coffins: valorMascarado,
-        calculoN: valorMascarado,
-        importadostotal: valorMascarado,
-        icmstotal: valorMascarado
-    };
+    historicoCalculos.forEach(function (item, index) {
+        var li = document.createElement('li');
 
-    historicoCalculos.unshift(itemMascarado);
+        // Borrando o item inteiro e desativando clique
+        li.classList.add(index === 0 ? 'ultimo-calculo' : 'calculo-anterior');
+        li.classList.add('resultado-borrado');
+        li.style.pointerEvents = 'none';
 
-    if (historicoCalculos.length > 5) {
-        historicoCalculos.pop();
-    }
-
-    atualizarHistorico();
-    salvarHistorico();
-    document.querySelector('.historico').style.display = 'block';
+        li.innerHTML = `<span class="valor">${item.valor}</span> <span class="data">${item.data}</span>`;
+        lista.appendChild(li);
+    });
 }
+
 
 
 
