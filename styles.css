@@ -370,3 +370,9 @@ button:hover {
     text-align: center;
 }
 
+
+.historico ul li {
+    pointer-events: none; /* Desabilita o clique nos itens do histórico */
+    filter: blur(5px); /* Mantém o efeito de borrado */
+    opacity: 0.5; /* Deixa os itens mais visíveis, mas sem interação */
+}
