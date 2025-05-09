@@ -12,58 +12,51 @@ function fecharModalSobre() {
 }
 
 function formatarDataHora() {
-  var agora = new Date();
-  return agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR');
+    var agora = new Date();
+    return agora.toLocaleDateString('pt-BR') + ' ' + agora.toLocaleTimeString('pt-BR');
+}
+
+function formatarMoeda(valor) {
+    return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valor);
 }
 
 function adicionarAoHistorico(valor, pis, coffins, calculoN, importadostotal, icmstotal) {
-  var dataHoraAtual = formatarDataHora();
-  historicoCalculos.unshift({
-    valor: "XXX,XX",
-    data: dataHoraAtual,
-    pis: "XXX,XX",
-    coffins: "XXX,XX",
-    calculoN: "XXX,XX",
-    importadostotal: "XXX,XX",
-    icmstotal: "XXX,XX"
-  });
-  if (historicoCalculos.length > 5) {
-    historicoCalculos.pop();
-  }
-  atualizarHistorico();
-  salvarHistorico();
-  document.querySelector('.historico').style.display = 'block';
-
-  // Adiciona aviso de protótipo
-  if (!document.getElementById("avisoDemo")) {
-    var aviso = document.createElement("div");
-    aviso.id = "avisoDemo";
-    aviso.style.marginTop = "20px";
-    aviso.style.color = "red";
-    aviso.style.fontWeight = "bold";
-    aviso.innerText = "Este é um protótipo gratuito para demonstração. Para acesso completo, entre em contato pelo e-mail wrubly@gmail.com e solicite a chave de acesso.";
-    document.body.appendChild(aviso);
-  }
+    var dataHoraAtual = formatarDataHora();
+    historicoCalculos.unshift({
+        valor: formatarMoeda(valor),
+        data: dataHoraAtual,
+        pis: formatarMoeda(pis),
+        coffins: formatarMoeda(coffins),
+        calculoN: formatarMoeda(calculoN),
+        importadostotal: formatarMoeda(importadostotal),
+        icmstotal: formatarMoeda(icmstotal)
+    });
+    if (historicoCalculos.length > 5) {
+        historicoCalculos.pop();
+    }
+    atualizarHistorico();
+    salvarHistorico();
+    document.querySelector('.historico').style.display = 'block';
 }
 
 function exibirDetalhesHistorico(index) {
-  var historicoItem = historicoCalculos[index];
-  var mensagem = `PIS: ${historicoItem.pis}\nCOFINS: ${historicoItem.coffins}\nICMS: ${historicoItem.calculoN}\nTOTAL IMPORTADOS: ${historicoItem.importadostotal}\nTOTAL ICMS: ${historicoItem.icmstotal}`;
-  alert(mensagem);
+    var historicoItem = historicoCalculos[index];
+    var mensagem = `PIS: ${historicoItem.pis}\nCOFINS: ${historicoItem.coffins}\nICMS: ${historicoItem.calculoN}\nTOTAL IMPORTADOS: ${historicoItem.importadostotal}\nTOTAL ICMS: ${historicoItem.icmstotal}`;
+    alert(mensagem);
 }
 
 function atualizarHistorico() {
-  var lista = document.getElementById('historicoLista');
-  lista.innerHTML = '';
-  historicoCalculos.forEach(function(item, index) {
-    var li = document.createElement('li');
-    li.innerHTML = `<span class="valor">${item.valor}</span> <span class="data">${item.data}</span>`;
-    li.classList.add(index === 0 ? 'ultimo-calculo' : 'calculo-anterior');
-    li.addEventListener('click', function() {
-      exibirDetalhesHistorico(index);
+    var lista = document.getElementById('historicoLista');
+    lista.innerHTML = '';
+    historicoCalculos.forEach(function (item, index) {
+        var li = document.createElement('li');
+        li.innerHTML = `<span class="valor">${item.valor}</span> <span class="data">${item.data}</span>`;
+        li.classList.add(index === 0 ? 'ultimo-calculo' : 'calculo-anterior');
+        li.addEventListener('click', function () {
+            exibirDetalhesHistorico(index);
+        });
+        lista.appendChild(li);
     });
-    lista.appendChild(li);
-  });
 }
 
 function calcularDesconto() {
@@ -90,14 +83,14 @@ function calcularDesconto() {
         var importadostotal = valorTotal - valorTotalN;
         var icmstotal = (valorTotal - valorTotalN) * 0.04;
 
-        // Mostra valores mascarados
-        resultado.textContent = "XXX,XX";
+        var desconto = pis + coffins + calculo_N;
+        resultado.textContent = formatarMoeda(desconto);
         valorDesconto.classList.remove('hidden');
-        pisResult.textContent = "XXX,XX";
-        coffinsResult.textContent = "XXX,XX";
-        calculoNResult.textContent = "XXX,XX";
-        importadostotalResult.textContent = "XXX,XX";
-        icmstotalResult.textContent = "XXX,XX";
+        pisResult.textContent = formatarMoeda(pis);
+        coffinsResult.textContent = formatarMoeda(coffins);
+        calculoNResult.textContent = formatarMoeda(calculo_N);
+        importadostotalResult.textContent = formatarMoeda(importadostotal);
+        icmstotalResult.textContent = formatarMoeda(icmstotal);
 
         document.getElementById('pisValue').classList.remove('hidden');
         document.getElementById('coffinsValue').classList.remove('hidden');
@@ -109,126 +102,144 @@ function calcularDesconto() {
             el.classList.add('animated');
         });
 
-        adicionarAoHistorico(0, 0, 0, 0, 0, 0);
+        adicionarAoHistorico(desconto, pis, coffins, calculo_N, importadostotal, icmstotal);
+
+        // Adiciona borrado nos resultados
+        document.querySelectorAll('#resultado, #pisResult, #coffinsResult, #calculoNResult, #importadostotalResult, #icmstotalResult')
+            .forEach(el => el.classList.add('resultado-borrado'));
+
+        // Adiciona mensagem de aviso
+        if (!document.getElementById('avisoAcesso')) {
+            const aviso = document.createElement('p');
+            aviso.id = 'avisoAcesso';
+            aviso.className = 'aviso-acesso';
+            aviso.textContent = 'Este é apenas um exemplo. O acesso completo pode ser solicitado via e-mail: wrubly@gmail.com mediante pagamento mensal.';
+            document.querySelector('.container').appendChild(aviso);
+        }
     }
 }
 
 function limpar() {
-  document.getElementById('valorTotal').value = '';
-  document.getElementById('valorTotalN').value = '';
+    document.getElementById('valorTotal').value = '';
+    document.getElementById('valorTotalN').value = '';
 
-  document.getElementById('resultado').textContent = 'XXX,XX';
-  document.getElementById('pisResult').textContent = 'XXX,XX';
-  document.getElementById('coffinsResult').textContent = 'XXX,XX';
-  document.getElementById('calculoNResult').textContent = 'XXX,XX';
-  document.getElementById('importadostotalResult').textContent = 'XXX,XX';
-  document.getElementById('icmstotalResult').textContent = 'XXX,XX';
+    document.getElementById('resultado').textContent = 'XXX,XXX';
+    document.getElementById('pisResult').textContent = 'XXX,XXX';
+    document.getElementById('coffinsResult').textContent = 'XXX,XXX';
+    document.getElementById('calculoNResult').textContent = 'XXX,XXX';
+    document.getElementById('importadostotalResult').textContent = 'XXX,XXX';
+    document.getElementById('icmstotalResult').textContent = 'XXX,XXX';
 
-  document.getElementById('valorDesconto').classList.add('hidden');
-  document.getElementById('pisValue').classList.add('hidden');
-  document.getElementById('coffinsValue').classList.add('hidden');
-  document.getElementById('calculoNValue').classList.add('hidden');
-  document.getElementById('importadostotalValue').classList.add('hidden');
-  document.getElementById('icmstotalValue').classList.add('hidden');
+    document.getElementById('valorDesconto').classList.add('hidden');
+    document.getElementById('pisValue').classList.add('hidden');
+    document.getElementById('coffinsValue').classList.add('hidden');
+    document.getElementById('calculoNValue').classList.add('hidden');
+    document.getElementById('importadostotalValue').classList.add('hidden');
+    document.getElementById('icmstotalValue').classList.add('hidden');
 
-  document.querySelectorAll('#valorDesconto, #pisValue, #coffinsValue, #calculoNValue, #importadostotalValue, #icmstotalValue').forEach(el => {
-    el.classList.remove('animated');
-  });
+    document.querySelectorAll('#resultado, #pisResult, #coffinsResult, #calculoNResult, #importadostotalResult, #icmstotalResult')
+        .forEach(el => el.classList.remove('resultado-borrado'));
+
+    const avisoExistente = document.getElementById('avisoAcesso');
+    if (avisoExistente) avisoExistente.remove();
+
+    document.querySelectorAll('#valorDesconto, #pisValue, #coffinsValue, #calculoNValue, #importadostotalValue, #icmstotalValue')
+        .forEach(el => el.classList.remove('animated'));
 }
 
 function limparHistorico() {
-  historicoCalculos = [];
-  salvarHistorico();
-  atualizarHistorico();
+    historicoCalculos = [];
+    salvarHistorico();
+    atualizarHistorico();
 }
 
 function salvarHistorico() {
-  localStorage.setItem('historicoCalculos', JSON.stringify(historicoCalculos));
+    localStorage.setItem('historicoCalculos', JSON.stringify(historicoCalculos));
 }
 
 function salvarModoEscuro() {
-  localStorage.setItem('modoEscuro', modoEscuroAtivado);
+    localStorage.setItem('modoEscuro', modoEscuroAtivado);
 }
 
 function carregarHistorico() {
-  var historicoSalvo = localStorage.getItem('historicoCalculos');
-  if (historicoSalvo) {
-    historicoCalculos = JSON.parse(historicoSalvo);
-    atualizarHistorico();
-    document.querySelector('.historico').style.display = 'block';
-  }
+    var historicoSalvo = localStorage.getItem('historicoCalculos');
+    if (historicoSalvo) {
+        historicoCalculos = JSON.parse(historicoSalvo);
+        atualizarHistorico();
+        document.querySelector('.historico').style.display = 'block';
+    }
 }
 
 function carregarModoEscuro() {
-  var modoEscuroSalvo = localStorage.getItem('modoEscuro');
-  if (modoEscuroSalvo !== null) {
-    modoEscuroAtivado = JSON.parse(modoEscuroSalvo);
-    aplicarModoEscuro();
-  }
+    var modoEscuroSalvo = localStorage.getItem('modoEscuro');
+    if (modoEscuroSalvo !== null) {
+        modoEscuroAtivado = JSON.parse(modoEscuroSalvo);
+        aplicarModoEscuro();
+    }
 }
 
 function aplicarModoEscuro() {
-  var body = document.body;
-  body.classList.toggle('dark-mode', modoEscuroAtivado);
+    var body = document.body;
+    body.classList.toggle('dark-mode', modoEscuroAtivado);
 
-  var modoEscuroBtn = document.querySelector('.modo-escuro-btn');
-  modoEscuroBtn.textContent = modoEscuroAtivado ? 'Modo Claro' : 'Modo Escuro';
+    var modoEscuroBtn = document.querySelector('.modo-escuro-btn');
+    modoEscuroBtn.textContent = modoEscuroAtivado ? 'Modo Claro' : 'Modo Escuro';
 }
 
 function alternarModo() {
-  modoEscuroAtivado = !modoEscuroAtivado;
-  salvarModoEscuro();
-  aplicarModoEscuro();
+    modoEscuroAtivado = !modoEscuroAtivado;
+    salvarModoEscuro();
+    aplicarModoEscuro();
 }
 
 function adicionarBotaoMinimizar() {
-  var tituloHistorico = document.querySelector('.titulo-historico');
-  var botaoMinimizar = document.createElement('button');
-  botaoMinimizar.id = 'toggleHistorico';
-  botaoMinimizar.title = 'Minimizar o histórico';
-  botaoMinimizar.textContent = '-';
-  tituloHistorico.appendChild(botaoMinimizar);
+    var tituloHistorico = document.querySelector('.titulo-historico');
+    var botaoMinimizar = document.createElement('button');
+    botaoMinimizar.id = 'toggleHistorico';
+    botaoMinimizar.title = 'Minimizar o histórico';
+    botaoMinimizar.textContent = '-';
+    tituloHistorico.appendChild(botaoMinimizar);
 
-  botaoMinimizar.addEventListener('click', function() {
-    var infoHistorico = document.getElementById('infoHistorico');
-    var historicoLista = document.getElementById('historicoLista');
-    var limparHistoricoBtn = document.getElementById('limparHistorico');
-    var isHistoricoVisible = infoHistorico.style.visibility !== 'hidden';
+    botaoMinimizar.addEventListener('click', function () {
+        var infoHistorico = document.getElementById('infoHistorico');
+        var historicoLista = document.getElementById('historicoLista');
+        var limparHistoricoBtn = document.getElementById('limparHistorico');
+        var isHistoricoVisible = infoHistorico.style.visibility !== 'hidden';
 
-    infoHistorico.style.visibility = isHistoricoVisible ? 'hidden' : 'visible';
-    infoHistorico.style.height = isHistoricoVisible ? '0' : 'auto';
+        infoHistorico.style.visibility = isHistoricoVisible ? 'hidden' : 'visible';
+        infoHistorico.style.height = isHistoricoVisible ? '0' : 'auto';
 
-    historicoLista.style.visibility = isHistoricoVisible ? 'hidden' : 'visible';
-    historicoLista.style.height = isHistoricoVisible ? '0' : 'auto';
+        historicoLista.style.visibility = isHistoricoVisible ? 'hidden' : 'visible';
+        historicoLista.style.height = isHistoricoVisible ? '0' : 'auto';
 
-    limparHistoricoBtn.style.display = isHistoricoVisible ? 'none' : 'block';
+        limparHistoricoBtn.style.display = isHistoricoVisible ? 'none' : 'block';
 
-    this.title = isHistoricoVisible ? 'Maximizar o histórico' : 'Minimizar o histórico';
-    this.textContent = isHistoricoVisible ? '+' : '-';
-  });
+        this.title = isHistoricoVisible ? 'Maximizar o histórico' : 'Minimizar o histórico';
+        this.textContent = isHistoricoVisible ? '+' : '-';
+    });
 }
 
 adicionarBotaoMinimizar();
 
-document.getElementById('limparHistorico').addEventListener('click', function() {
-  if (confirm("Tem certeza que deseja limpar o histórico?")) {
-    limparHistorico();
-  }
+document.getElementById('limparHistorico').addEventListener('click', function () {
+    if (confirm("Tem certeza que deseja limpar o histórico?")) {
+        limparHistorico();
+    }
 });
 
-document.getElementById('valorTotal').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-    calcularDesconto();
-  }
+document.getElementById('valorTotal').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        calcularDesconto();
+    }
 });
 
-document.getElementById('valorTotalN').addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-    calcularDesconto();
-  }
+document.getElementById('valorTotalN').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        calcularDesconto();
+    }
 });
 
-document.addEventListener('DOMContentLoaded', (event) => {
-  carregarHistorico();
-  carregarModoEscuro();
+document.addEventListener('DOMContentLoaded', () => {
+    carregarHistorico();
+    carregarModoEscuro();
 });
