@@ -1,3 +1,6 @@
+// Limpa histórico antigo com dados reais ao carregar
+localStorage.removeItem('historicoCalculos');
+
 var historicoCalculos = [];
 var modoEscuroAtivado = false;
 
@@ -17,13 +20,16 @@ function formatarDataHora() {
 }
 
 function formatarMoeda(valor) {
-    return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valor);
+    return new Intl.NumberFormat('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(valor);
 }
 
-function adicionarAoHistorico(valor, pis, coffins, calculoN, importadostotal, icmstotal) {
+function adicionarAoHistorico() {
     const dataHoraAtual = formatarDataHora();
-
     const valorMascarado = 'XXX,XXX';
+
     const itemMascarado = {
         valor: valorMascarado,
         data: dataHoraAtual,
@@ -44,7 +50,6 @@ function adicionarAoHistorico(valor, pis, coffins, calculoN, importadostotal, ic
     salvarHistorico();
     document.querySelector('.historico').style.display = 'block';
 }
-
 
 function exibirDetalhesHistorico(index) {
     var historicoItem = historicoCalculos[index];
@@ -109,13 +114,11 @@ function calcularDesconto() {
             el.classList.add('animated');
         });
 
-        adicionarAoHistorico(desconto, pis, coffins, calculo_N, importadostotal, icmstotal);
+        adicionarAoHistorico();
 
-        // Adiciona borrado nos resultados
         document.querySelectorAll('#resultado, #pisResult, #coffinsResult, #calculoNResult, #importadostotalResult, #icmstotalResult')
             .forEach(el => el.classList.add('resultado-borrado'));
 
-        // Adiciona mensagem de aviso
         if (!document.getElementById('avisoAcesso')) {
             const aviso = document.createElement('p');
             aviso.id = 'avisoAcesso';
