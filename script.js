@@ -1,7 +1,6 @@
 var historicoCalculos = [];
 var modoEscuroAtivado = false;
 
-
 function exibirModalSobre() {
     var modalSobre = document.getElementById('modalSobre');
     modalSobre.style.display = 'block';
