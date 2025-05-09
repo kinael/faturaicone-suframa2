@@ -1,4 +1,4 @@
-
+// Limpa histórico antigo com dados reais ao carregar
 localStorage.removeItem('historicoCalculos');
 
 var historicoCalculos = [];
@@ -26,34 +26,30 @@ function formatarMoeda(valor) {
     }).format(valor);
 }
 
-function atualizarHistorico() {
-    var lista = document.getElementById('historicoLista');
-    lista.innerHTML = '';
+function adicionarAoHistorico() {
+    const dataHoraAtual = formatarDataHora();
+    const valorMascarado = 'XXX,XXX';
 
-    historicoCalculos.forEach(function (item, index) {
-        var li = document.createElement('li');
-        li.classList.add(index === 0 ? 'ultimo-calculo' : 'calculo-anterior');
+    const itemMascarado = {
+        valor: valorMascarado,
+        data: dataHoraAtual,
+        pis: valorMascarado,
+        coffins: valorMascarado,
+        calculoN: valorMascarado,
+        importadostotal: valorMascarado,
+        icmstotal: valorMascarado
+    };
 
-        // Criação dos elementos manualmente para aplicar blur direto no valor
-        const valorSpan = document.createElement('span');
-        valorSpan.className = 'valor resultado-borrado';
-        valorSpan.textContent = item.valor;
+    historicoCalculos.unshift(itemMascarado);
 
-        const dataSpan = document.createElement('span');
-        dataSpan.className = 'data';
-        dataSpan.textContent = item.data;
+    if (historicoCalculos.length > 5) {
+        historicoCalculos.pop();
+    }
 
-        // Montagem da linha
-        li.appendChild(valorSpan);
-        li.appendChild(dataSpan);
-
-        // NÃO adiciona mais nenhum clique
-        // li.addEventListener(...) removido propositalmente
-
-        lista.appendChild(li);
-    });
+    atualizarHistorico();
+    salvarHistorico();
+    document.querySelector('.historico').style.display = 'block';
 }
-
 
 function exibirDetalhesHistorico(index) {
     var historicoItem = historicoCalculos[index];
