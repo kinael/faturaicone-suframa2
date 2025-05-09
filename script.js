@@ -21,23 +21,30 @@ function formatarMoeda(valor) {
 }
 
 function adicionarAoHistorico(valor, pis, coffins, calculoN, importadostotal, icmstotal) {
-    var dataHoraAtual = formatarDataHora();
-    historicoCalculos.unshift({
-        valor: formatarMoeda(valor),
+    const dataHoraAtual = formatarDataHora();
+
+    const valorMascarado = 'XXX,XXX';
+    const itemMascarado = {
+        valor: valorMascarado,
         data: dataHoraAtual,
-        pis: formatarMoeda(pis),
-        coffins: formatarMoeda(coffins),
-        calculoN: formatarMoeda(calculoN),
-        importadostotal: formatarMoeda(importadostotal),
-        icmstotal: formatarMoeda(icmstotal)
-    });
+        pis: valorMascarado,
+        coffins: valorMascarado,
+        calculoN: valorMascarado,
+        importadostotal: valorMascarado,
+        icmstotal: valorMascarado
+    };
+
+    historicoCalculos.unshift(itemMascarado);
+
     if (historicoCalculos.length > 5) {
         historicoCalculos.pop();
     }
+
     atualizarHistorico();
     salvarHistorico();
     document.querySelector('.historico').style.display = 'block';
 }
+
 
 function exibirDetalhesHistorico(index) {
     var historicoItem = historicoCalculos[index];
