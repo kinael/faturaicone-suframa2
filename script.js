@@ -32,18 +32,27 @@ function atualizarHistorico() {
 
     historicoCalculos.forEach(function (item, index) {
         var li = document.createElement('li');
-
-        // Borrando o item inteiro e desativando clique
         li.classList.add(index === 0 ? 'ultimo-calculo' : 'calculo-anterior');
-        li.classList.add('resultado-borrado');
-        li.style.pointerEvents = 'none';
 
-        li.innerHTML = `<span class="valor">${item.valor}</span> <span class="data">${item.data}</span>`;
+        // Criação dos elementos manualmente para aplicar blur direto no valor
+        const valorSpan = document.createElement('span');
+        valorSpan.className = 'valor resultado-borrado';
+        valorSpan.textContent = item.valor;
+
+        const dataSpan = document.createElement('span');
+        dataSpan.className = 'data';
+        dataSpan.textContent = item.data;
+
+        // Montagem da linha
+        li.appendChild(valorSpan);
+        li.appendChild(dataSpan);
+
+        // NÃO adiciona mais nenhum clique
+        // li.addEventListener(...) removido propositalmente
+
         lista.appendChild(li);
     });
 }
-
-
 
 
 function exibirDetalhesHistorico(index) {
