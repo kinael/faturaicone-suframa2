@@ -8,6 +8,19 @@ body {
   animation: fadeIn 1s ease-out;
 }
 
+.resultado-borrado {
+    filter: blur(5px);
+    user-select: none;
+    font-weight: bold;
+}
+
+.aviso-acesso {
+    font-size: 14px;
+    margin-top: 5px;
+    color: red;
+}
+
+
 #iconimg {
     margin-top: -3px;
 }
